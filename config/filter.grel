@@ -1,0 +1,1 @@
+filter(forEach(["AG", "APG", "GRULAC", "EEG", "WEOG", "DdC", "EiT", "DgE", "OCDE", "BRICS", "G8", "G20", "G77", "AOGCM", "A1", "NA1", "LDCs", "AOSIS", "EU", "UG", "CfRN", "CACAM", "OPEC", "LAS", "EIG", "AILAC", "ALBA", "OIF"], col, if(isBlank(cells[col]), "", col)), arr, arr != "").join('/')
