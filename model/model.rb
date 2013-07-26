@@ -44,7 +44,7 @@ class Institution
 	# Links
 	has n, :departments
 	has n, :participations
-	has n, :institution_types, :through => Resource
+	belongs_to :type, 'InstitutionType', :parent_key => [:id]
 	has n, :authors, :through => Resource
 end
 
@@ -100,7 +100,7 @@ class InstitutionType
 	property :symbol, String, :length => 5
 
 	# Links
-	has n, :institutions, :through => Resource
+	has n, :institutions, 'Institution', :child_key => [:id]
 end
 
 # Participations

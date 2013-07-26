@@ -25,7 +25,6 @@ class Importer
 		@authors = {}
 		@registers = {}
 		@departments = {}
-		@types = {}
 		@taxonomy = {}
 
 		for t in InstitutionType.all
@@ -48,7 +47,7 @@ class Importer
 
 			# Yielding rows
 			if row[8] != nil
-				ins = {:name => row[8], :types => row[7], :department => row[9], :country => row[10]}
+				ins = {:name => row[8], :type => row[7], :department => row[9], :country => row[10]}
 				yield ins, aut
 			end 
 
@@ -100,16 +99,9 @@ class Importer
 					end
 
 					# Registering Institution Types
-					if ins[:types] != nil and ins[:types] != ''
-
-						# Looping
-						for type in ins[:types].split('/')
-
-							typkey = type+'||'+ins[:name]
-							if !@types.has_key?(typkey)
-								@types.store(typkey, nil)
-								@institutions[ins[:name]].institution_types << @taxonomy[type]
-							end
+					if ins[:type] != nil and ins[:type] != ''
+						if @institutions[ins[:name]].type == nil
+							@institutions[ins[:name]].type = @taxonomy[ins[:type]]
 						end
 					end
 				end
