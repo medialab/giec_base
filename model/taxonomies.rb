@@ -51,7 +51,6 @@ module Taxonomies
 		{:symbol => 'HEI', :name => 'Higher Education Institution'},
 		{:symbol => 'INDV', :name => 'Individual'},
 		{:symbol => 'INT', :name => 'International Institution'},
-		{:symbol => 'IPCC', :name => 'Intergovernmental Panel on Climate Change'},
 		{:symbol => 'NGO', :name => 'Non-Governmental Organization'},
 		{:symbol => 'OTHER', :name => 'Other'},
 		{:symbol => 'PRO', :name => 'Public Research Organisation'}

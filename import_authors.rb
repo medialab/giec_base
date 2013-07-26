@@ -47,9 +47,11 @@ class Importer
 
 			# Yielding rows
 			if row[8] != nil
-				ins = {:name => row[8], :type => row[7], :department => row[9], :country => row[10]}
-				yield ins, aut
-			end 
+				if row[7] != 'IPCC'
+					ins = {:name => row[8], :type => row[7], :department => row[9], :country => row[10]}
+					yield ins, aut
+				end
+			end
 
 			# Second and Third Institutions
 
