@@ -40,6 +40,12 @@ class Importer
 		# Properties
 		puts 'Importing Chapters...'
 		@chapters = []
+		@types = {}
+
+		# Getting Chapter Types
+		for ctype in ChapterType.all
+			@types.store(ctype.symbol, ctype)
+		end
 
 		# Process
 		compute
@@ -55,16 +61,23 @@ class Importer
 			ar = AssessmentReport.get(row[0].to_i)
 			wg = WorkingGroup.first_or_create(:assessment_report => ar, :number => row[1], :title => WORKING_GROUPS[[row[0], row[1]].join('-')])
 			chapter = {:assessment_report => ar, :working_group => wg, :number => row[2].to_i, :title => row[3]}
-			yield chapter
+			types = row[4]
+			yield chapter, types
 		end
 	end
 
 	# Computing model
 	def compute
-		load_csv do |chapter|
+		load_csv do |chapter, types|
 
 			# Looping through chapters
 			model = Chapter.new(chapter)
+			if types != nil
+				for type in types.split('/')
+					model.types << @types[type]
+				end
+			end
+
 			@chapters.push(model)
 		end
 	end

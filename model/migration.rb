@@ -36,4 +36,8 @@ for ar in Taxonomies::AssessmentReports
 	AssessmentReport.create(ar)
 end
 
+for chtype in Taxonomies::ChapterTypes
+	ChapterType.create(chtype)
+end
+
 puts 'Done !'

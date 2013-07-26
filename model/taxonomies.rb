@@ -61,7 +61,6 @@ module Taxonomies
 	Roles = [
 		{:symbol => 'LA', :name => 'Lead Author'},
 		{:symbol => 'LCA', :name => 'Lead Coordinating Author'},
-		{:symbol => 'CLA', :name => 'Coordination Lead Author???'},
 		{:symbol => 'RE', :name => 'Review Editor'},
 		{:symbol => 'CA', :name => 'Contributing Author'}
 	]
@@ -73,5 +72,32 @@ module Taxonomies
 		{:year => '2001'},
 		{:year => '2007'},
 		{:year => '2013'}
+	]
+
+	# Chapter Types
+	ChapterTypes = [
+		{:symbol => 'GHG', :name => 'Greenhouse Gases'},
+		{:symbol => 'AER', :name => 'Aerosols'},
+		{:symbol => 'RAD', :name => 'Radiative Forcing'},
+		{:symbol => 'CLI', :name => 'Climate Processes'},
+		{:symbol => 'MOD', :name => 'Model Evaluation'},
+		{:symbol => 'EQU', :name => 'Equilibrium Climate Change'},
+		{:symbol => 'PRO', :name => 'Projections of Global Climate Change'},
+		{:symbol => 'OBS', :name => 'Observate Climate Variability'},
+		{:symbol => 'DET', :name => 'Detection and Attribution'},
+		{:symbol => 'SEA', :name => 'Sea Level Change'},
+		{:symbol => 'EFF', :name => 'Effects on Ecosystems'},
+		{:symbol => 'ADV', :name => 'Advancing Understanding'},
+		{:symbol => 'OVE', :name => 'Climate System: Overview'},
+		{:symbol => 'RAD', :name => 'Radiative Forcing'},
+		{:symbol => 'CAR', :name => 'Carbon Cycle and Biogeochemistry'},
+		{:symbol => 'ATM', :name => 'Atmosphere and Surface'},
+		{:symbol => 'REG', :name => 'Regional Downscaling'},
+		{:symbol => 'SCE', :name => 'Scenario Development'},
+		{:symbol => 'HIS', :name => 'History of Climate Change: Overview'},
+		{:symbol => 'CRY', :name => 'Cryosphere'},
+		{:symbol => 'OCE', :name => 'Oceans'},
+		{:symbol => 'PAL', :name => 'Paleoclimate'},
+		{:symbol => 'INT', :name => 'Introduction'},
 	]
 end

@@ -68,6 +68,15 @@ class Importer
 				@participations.push(model)
 			end
 		end
+		load_csv("feed/AR3.csv", 3) do |p|
+
+			# Looping through participations
+			for c in p[:links]
+				pos = c[:chapter].split('.')
+				model = Participation.new(:ar => @AR, :wg => pos[0], :chapter => pos[1], :role => c[:role], :author => @authors[p[:id].to_i])
+				@participations.push(model)
+			end
+		end
 		load_csv("feed/AR4.csv", 4) do |p|
 
 			# Looping through participations

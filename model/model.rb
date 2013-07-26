@@ -163,6 +163,31 @@ class Chapter
 	# Links
 	belongs_to :assessment_report
 	belongs_to :working_group
+	has n, :types, 'ChapterType', :through => :chapter_chapter_types, :via => :chapter_type
+end
+
+# Chapter Links
+#===============
+class ChapterChapterType
+	include DataMapper::Resource
+
+	# Links
+	belongs_to :chapter,   :key => true
+	belongs_to :chapter_type, :key => true
+end
+
+# Chapter Types
+#===============
+class ChapterType
+	include DataMapper::Resource
+
+	# Properties
+	property :id, Serial
+	property :symbol, String, :length => 3
+	property :name, String, :length => 255
+
+	# Links
+	has n, :chapters, :through => :chapter_chapter_types
 end
 
 
