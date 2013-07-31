@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Total importation
 ruby model/migration.rb
 ruby import_chapters.rb
