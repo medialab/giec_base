@@ -18,4 +18,9 @@ class Query
 	def exec
 
 	end
+
+	# CSV Ouptut
+	def csv_output(data)
+		return []
+	end
 end

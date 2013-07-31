@@ -21,8 +21,8 @@ require_relative "queries/#{ARGV[0]}.rb"
 FileUtils.mkdir_p 'results'
 
 q = Query.new
-results = q.exec()
+results = q.exec
 for row in results
 	puts row.inspect
 end
-Exporter.save(results, "results/#{ARGV[0]}.csv")
+Exporter.save results, "results/#{ARGV[0]}.csv"

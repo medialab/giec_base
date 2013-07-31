@@ -12,12 +12,21 @@ class Query
 	# Properties
 	def initialize
 		@key = "%s.%s"
-		@csv_header = ['ar', 'wg', 'chapter', 'authors', 'title']
+		@csv_header = ['ar', 'wg', 'chapter', 'nb_authors', 'percentage_authors', 'title', 'code_type','type']
 		@chapters = {}
+		@total_participations = {}
 		(1..5).each {|ar| @chapters.store(ar, {})}
 
+		# Getting chapters
 		for c in Chapter.all
 			@chapters[c.assessment_report.id].store(@key % [c.working_group.number, c.number], {:model => c, :count => 0})
+		end
+
+		# Getting total partipations
+		for ar in 1..5
+			participations = repository(:default).adapter.select('SELECT DISTINCT author_id from participations WHERE ar = ?', ar)
+			count = participations.length == 0 ? 1 : participations.length
+			@total_participations.store(ar, count)
 		end
 	end
 
@@ -47,7 +56,16 @@ class Query
 		data.each do |ar, chapters|
 			for chapter  in chapters
 				cinfo = chapter[0].split('.')
-				csv_array.push([ar, cinfo[0], cinfo[1], chapter[1][:count], chapter[1][:model].title])
+				csv_array.push([
+					ar, 
+					cinfo[0], 
+					cinfo[1], 
+					chapter[1][:count],
+					(chapter[1][:count] * 100) / @total_participations[ar],
+					chapter[1][:model].title,
+					chapter[1][:model].types.map {|t| t.symbol}.join('/'),
+					chapter[1][:model].types.map {|t| t.name}.join(' / ')
+				])
 			end
 		end
 
