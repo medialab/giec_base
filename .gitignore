@@ -2,4 +2,5 @@
 Gemfile.lock
 config/database.yml
 feed/
+results/
 TODO.md

@@ -60,7 +60,7 @@ class Importer
 			# Yielding row
 			ar = AssessmentReport.get(row[0].to_i)
 			wg = WorkingGroup.first_or_create(:assessment_report => ar, :number => row[1], :title => WORKING_GROUPS[[row[0], row[1]].join('-')])
-			chapter = {:assessment_report => ar, :working_group => wg, :number => row[2].to_i, :title => row[3]}
+			chapter = {:assessment_report => ar, :working_group => wg, :number => row[2], :title => row[3]}
 			types = row[4]
 			yield chapter, types
 		end

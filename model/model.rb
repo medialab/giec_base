@@ -11,9 +11,6 @@
 require 'rubygems'
 require 'data_mapper'
 
-# TODO :
-# Recompute quelques liens through
-
 # Author
 #========
 class Author
@@ -157,7 +154,7 @@ class Chapter
 
 	# Properties
 	property :id, Serial
-	property :number, Integer
+	property :number, String, :length => 4
 	property :title, String, :length => 255
 
 	# Links
