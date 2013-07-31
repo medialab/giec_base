@@ -52,18 +52,6 @@ class Importer
 					yield ins, aut
 				end
 			end
-
-			# Second and Third Institutions
-
-			# if row[12] != nil
-			# 	ins = {:name => row[12], :types => row[11], :department => row[13], :country => row[15]}
-			# 	yield ins, aut
-			# end
-
-			# if row[14] != nil
-			# 	ins = {:name => row[14], :types => '', :department => '', :country => ''}
-			# 	yield ins, aut
-			# end
 		end
 	end
 

@@ -7,6 +7,8 @@
 #   Organization : Medialab - Sciences Po
 #   Version : 1.0
 
+require_relative 'subqueries/ar_participation.rb'
+
 class Query
 
 	# Properties
@@ -14,19 +16,12 @@ class Query
 		@key = "%s.%s"
 		@csv_header = ['ar', 'wg', 'chapter', 'nb_authors', 'percentage_authors', 'title', 'code_type','type']
 		@chapters = {}
-		@total_participations = {}
+		@total_participations = TotalParticipation.get
 		(1..5).each {|ar| @chapters.store(ar, {})}
 
 		# Getting chapters
 		for c in Chapter.all
 			@chapters[c.assessment_report.id].store(@key % [c.working_group.number, c.number], {:model => c, :count => 0})
-		end
-
-		# Getting total partipations
-		for ar in 1..5
-			participations = repository(:default).adapter.select('SELECT DISTINCT author_id from participations WHERE ar = ?', ar)
-			count = participations.length == 0 ? 1 : participations.length
-			@total_participations.store(ar, count)
 		end
 	end
 
@@ -45,15 +40,15 @@ class Query
 			@chapters[ar] = @chapters[ar].sort_by {|_, value| -value[:count]}
 		end
 
-		return csv_output(@chapters)
+		return csv_output
 	end
 
 	# CSV Ouptut
-	def csv_output(data)
+	def csv_output
 		
 		# Formatting the array
 		csv_array = [@csv_header]
-		data.each do |ar, chapters|
+		@chapters.each do |ar, chapters|
 			for chapter  in chapters
 				cinfo = chapter[0].split('.')
 				csv_array.push([

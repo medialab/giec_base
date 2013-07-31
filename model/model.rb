@@ -15,6 +15,7 @@ require 'data_mapper'
 #========
 class Author
 	include DataMapper::Resource
+	attr_accessor :data
 
 	# Properties
 	property :id, Serial
@@ -25,6 +26,7 @@ class Author
 	has n, :institutions, :through => Resource
 	has n, :groupings
 	has n, :participations
+	has n, :chairman_offices
 	has n, :departments, :through => Resource
 end
 
@@ -41,6 +43,7 @@ class Institution
 	# Links
 	has n, :departments
 	has n, :participations
+	has n, :chairman_offices
 	belongs_to :type, 'InstitutionType', :parent_key => [:id]
 	has n, :authors, :through => Resource
 end
@@ -57,6 +60,7 @@ class Department
 	# Links
 	belongs_to :institution
 	has n, :participations
+	has n, :chairman_offices
 	has n, :authors, :through => Resource
 end
 
@@ -111,6 +115,24 @@ class Participation
 	property :wg, Integer, :index => true
 	property :chapter, String, :length => 4, :index => true
 	property :role, String, :length => 4, :index => true
+
+	# Links
+	belongs_to :author
+	belongs_to :institution, :required => false
+	belongs_to :department, :required => false
+end
+
+# Chairmen
+#==========
+class ChairmanOffice
+	include DataMapper::Resource
+
+	# Properties
+	property :id, Serial
+	property :ar, Integer, :index => true
+	property :wg, Integer, :index => true
+	property :role, String, :length => 255
+	property :rank, Integer, :index => true
 
 	# Links
 	belongs_to :author
