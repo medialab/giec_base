@@ -59,7 +59,7 @@ module Taxonomies
 	# Roles
 	Roles = [
 		{:symbol => 'LA', :name => 'Lead Author'},
-		{:symbol => 'LCA', :name => 'Lead Coordinating Author'},
+		{:symbol => 'LCA', :name => 'Coordinating Lead Author'},
 		{:symbol => 'RE', :name => 'Review Editor'},
 		{:symbol => 'CA', :name => 'Contributing Author'}
 	]

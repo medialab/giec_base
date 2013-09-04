@@ -35,7 +35,7 @@ class Importer
 	def load_csv
 		CSV.foreach("feed/Chairmen.csv", {:headers => :first_row}) do |row|
 			author = {:first_name => row[0], :last_name => row[1]}
-			chairman = {:role => row[2], :rank => row[3], :ar => row[4], :wg => row[5]}
+			chairman = {:role => row[2], :rank => row[3].to_i, :ar => row[4], :wg => row[5]}
 			yield author, chairman
 		end
 	end
@@ -51,10 +51,14 @@ class Importer
 			co = ChairmanOffice.new(chairman)
 			
 			# New Author
+			# TODO : Refactor
 			if relevant_author == nil
 				key = author[:first_name]+'|'+author[:last_name]
 				if !@chairmen.has_key? key
 					@chairmen.store(key, Author.new(author))
+					co.author = @chairmen[key]
+					@offices.push(co)
+				else
 					co.author = @chairmen[key]
 					@offices.push(co)
 				end
