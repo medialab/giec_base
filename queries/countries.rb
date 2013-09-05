@@ -13,8 +13,8 @@ class Query
 
 	# Properties
 	def initialize
-		@csv_header = ['country', 'ar2_nb', 'ar2_percent', 'ar3_nb', 'ar3_percent', 'ar4_nb', 'ar4_percent']
-		@ars = (2..4).to_a
+		@csv_header = ['country', 'ar1_nb', 'ar1_percent', 'ar2_nb', 'ar2_percent', 'ar3_nb', 'ar3_percent', 'ar4_nb', 'ar4_percent']
+		@ars = (1..4).to_a
 		@countries = {}
 		@total_participations = TotalParticipation.get
 
@@ -46,6 +46,8 @@ class Query
 		@countries.each do |country, counts|
 			csv_array.push([
 				country,
+				counts[1],
+				(counts[1] * 100) / @total_participations[1],
 				counts[2],
 				(counts[2] * 100) / @total_participations[2],
 				counts[3],

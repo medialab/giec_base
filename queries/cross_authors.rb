@@ -12,7 +12,7 @@ class Query
 	# Properties
 	def initialize
 		@csv_header = ['ar','first_name', 'last_name', 'working_groups']
-		@ars = (2..4).to_a
+		@ars = (1..4).to_a
 		@cross_authors = {}
 		@ars.each {|ar| @cross_authors.store(ar, [])}
 	end

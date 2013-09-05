@@ -22,6 +22,7 @@ class Importer
 		# Properties
 		puts 'Importing Participations...'
 		@AR = nil
+		@max_ar = 4
 		@header = []
 		@participations = []
 		@authors = {}
@@ -59,33 +60,20 @@ class Importer
 
 	# Computing model
 	def compute
-		load_csv("feed/AR2.csv", 2) do |p|
 
-			# Looping through participations
-			for c in p[:links]
-				pos = c[:chapter].split('.')
-				model = Participation.new(:ar => @AR, :wg => pos[0], :chapter => pos[1], :role => c[:role], :author => @authors[p[:id].to_i])
-				@participations.push(model)
+		for i in 1..@max_ar
+			puts "Importing AR #{i}..."
+			load_csv("feed/AR#{i}.csv", i) do |p|
+
+				# Looping through participations
+				for c in p[:links]
+					pos = c[:chapter].split('.')
+					model = Participation.new(:ar => @AR, :wg => pos[0], :chapter => pos[1], :role => c[:role], :author => @authors[p[:id].to_i])
+					@participations.push(model)
+				end
 			end
 		end
-		load_csv("feed/AR3.csv", 3) do |p|
-
-			# Looping through participations
-			for c in p[:links]
-				pos = c[:chapter].split('.')
-				model = Participation.new(:ar => @AR, :wg => pos[0], :chapter => pos[1], :role => c[:role], :author => @authors[p[:id].to_i])
-				@participations.push(model)
-			end
-		end
-		load_csv("feed/AR4.csv", 4) do |p|
-
-			# Looping through participations
-			for c in p[:links]
-				pos = c[:chapter].split('.')
-				model = Participation.new(:ar => @AR, :wg => pos[0], :chapter => pos[1], :role => c[:role], :author => @authors[p[:id].to_i])
-				@participations.push(model)
-			end
-		end
+		
 	end
 
 	# Saving to DB
