@@ -24,7 +24,6 @@ class Author
 
 	# Links
 	has n, :institutions, :through => Resource
-	has n, :groupings
 	has n, :participations
 	has n, :chairman_offices
 	has n, :departments, :through => Resource
@@ -38,12 +37,12 @@ class Institution
 	# Properties
 	property :id, Serial
 	property :name, String, :length => 255
-	property :country, String, :length => 255
 
 	# Links
 	has n, :departments
 	has n, :participations
 	has n, :chairman_offices
+	belongs_to :country
 	belongs_to :type, 'InstitutionType', :parent_key => [:id]
 	has n, :authors, :through => Resource
 end
@@ -64,6 +63,20 @@ class Department
 	has n, :authors, :through => Resource
 end
 
+# Country
+#==========
+class Country
+	include DataMapper::Resource
+
+	# Properties
+	property :id, Serial
+	property :name, String, :length => 255
+
+	# Links
+	has n, :institutions
+	has n, :groupings
+end
+
 # Grouping
 #=============
 class Grouping
@@ -74,7 +87,7 @@ class Grouping
 	property :symbol, String, :length => 255
 
 	# Links
-	belongs_to :author
+	belongs_to :country
 end
 
 # Groups

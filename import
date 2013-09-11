@@ -2,6 +2,7 @@
 
 # Total importation
 ruby model/migration.rb
+ruby import_countries.rb
 ruby import_chapters.rb
 ruby import_authors.rb
 ruby import_participations.rb

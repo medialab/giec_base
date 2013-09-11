@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------
-# Giec Institutions Importer
+# Giec Authors Importer
 # -------------------------------------------------------------------
 #
 #
@@ -21,14 +21,24 @@ class Importer
 
 		# Properties
 		puts 'Importing Authors and Institutions...'
+		@placeholder_institutions = {}
 		@institutions = {}
 		@authors = {}
+		@countries = {}
 		@registers = {}
 		@departments = {}
 		@taxonomy = {}
 
+		for i in Institution.all(:name => 'N/A')
+			@placeholder_institutions.store(i.country.name, i)
+		end
+
 		for t in InstitutionType.all
 			@taxonomy.store(t.symbol, t)
+		end
+
+		for c in Country.all
+			@countries.store(c.name, c.id)
 		end
 
 		# Working
@@ -44,14 +54,10 @@ class Importer
 
 			# Users
 			aut = {:id => row[0], :first_name => row[1], :last_name => row[2], :groupings => row[16]}
+			ins = {:name => row[8], :type => row[7], :department => row[9], :country => row[10]}
 
 			# Yielding rows
-			if row[8] != nil
-				if row[7] != 'IPCC'
-					ins = {:name => row[8], :type => row[7], :department => row[9], :country => row[10]}
-					yield ins, aut
-				end
-			end
+			if row[7] != 'IPCC' then yield ins, aut end
 		end
 	end
 
@@ -65,13 +71,13 @@ class Importer
 			if ins[:name] != nil
 				if ins[:name] != "N/A" and ins[:name] != ''
 					if !@institutions.has_key?(ins[:name])
-						model = Institution.new(:name => ins[:name], :country => ins[:country])
+						model = Institution.new(:name => ins[:name], :country_id => @countries[ins[:country]])
 						@institutions.store(ins[:name], model)
 					else
 
 						# Registering country if we find it elsewhere
 						if @institutions[ins[:name]].country == nil and ins[:country] != nil
-							@institutions[ins[:name]].country = ins[:country]
+							@institutions[ins[:name]][:country_id] = @countries[ins[:country]]
 						end
 					end
 
@@ -102,27 +108,21 @@ class Importer
 				model = Author.new(:id => aut[:id], :first_name => aut[:first_name], :last_name => aut[:last_name])
 				@authors.store(aut[:id], model)
 				@registers.store(aut[:id], [])
-
-				# Groupings
-				if aut[:groupings] != nil
-					for grouping in aut[:groupings].split('/')
-						gpmodel = Grouping.new(:symbol => grouping)
-						@authors[aut[:id]].groupings << gpmodel
-					end
-				end
 			end
 
 			# Author's Institutions
-			if ins[:name] != nil
-				if ins[:name] != '' and ins[:name] != 'N/A'
-					if !@registers[aut[:id]].include?(ins[:name])
-						@registers[aut[:id]].push(ins[:name])
-						@authors[aut[:id]].institutions << @institutions[ins[:name]]
+			if ins[:name] != '' and ins[:name] != 'N/A' and ins[:name] != nil
+				if !@registers[aut[:id]].include?(ins[:name])
+					@registers[aut[:id]].push(ins[:name])
+					@authors[aut[:id]].institutions << @institutions[ins[:name]]
 
-						if depkey != nil
-							@authors[aut[:id]].departments << @departments[depkey]
-						end
+					if depkey != nil
+						@authors[aut[:id]].departments << @departments[depkey]
 					end
+				end
+			else
+				if ins[:country] != nil
+					@authors[aut[:id]].institutions << @placeholder_institutions[ins[:country]]
 				end
 			end
 
