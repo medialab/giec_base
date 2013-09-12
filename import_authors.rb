@@ -68,7 +68,7 @@ class Importer
 		load_csv do |ins, aut|
 
 			# Registering institution
-			if ins[:type] == "INT" then ins_key = ins[:name]+'||'+ins[:country] else ins_key = ins[:name] end
+			if ins[:type] == "INT" and ins[:country] != nil then ins_key = ins[:name]+'||'+ins[:country] else ins_key = ins[:name] end
 
 			if ins[:name] != nil
 				if ins[:name] != "N/A" and ins[:name] != ''

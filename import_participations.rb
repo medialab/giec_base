@@ -22,7 +22,7 @@ class Importer
 		# Properties
 		puts 'Importing Participations...'
 		@AR = nil
-		@max_ar = 4
+		@max_ar = 5
 		@header = []
 		@participations = []
 		@authors = {}
@@ -58,9 +58,18 @@ class Importer
 		end
 	end
 
+	# Loading complement
+	def load_csv_complement()
+		CSV.foreach("feed/AR5_complement.csv", {:headers => :first_row}) do |row|
+			participation = {:ar => 5, :author_id => row[0], :chapter => row[1], :role => row[2], :wg => row[3].length}
+			yield participation
+		end
+	end
+
 	# Computing model
 	def compute
 
+		# Standard files
 		for i in 1..@max_ar
 			puts "Importing AR #{i}..."
 			load_csv("feed/AR#{i}.csv", i) do |p|
@@ -74,6 +83,12 @@ class Importer
 			end
 		end
 		
+		# Special files
+		puts "Importing AR 5 complements..."
+		load_csv_complement do |p|
+			@participations.push(Participation.new(p))
+		end
+
 	end
 
 	# Saving to DB
