@@ -4,3 +4,4 @@ config/database.yml
 feed/
 results/
 TODO.md
+diff/
