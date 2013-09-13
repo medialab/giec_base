@@ -22,6 +22,7 @@ class TotalParticipation
 end
 
 # TODO : are they in if several ARs not in WG1
+# TODO : drop Contributing Authors
 # The Inner Circle
 class InnerCircle
 
@@ -33,13 +34,13 @@ class InnerCircle
         # Filtering only highly participating ones
         wg1_authors.select! do |author|
             ars = []
-            author._data.store(:participations, [])
+            author._data.store(:participations, {})
 
             for i in 1..5
                 p = Participation.first(:author_id => author.id, :wg => 1, :ar => i)
                 if p != nil
                     ars.push(p.ar)
-                    author._data[:participations].push(p)
+                    author._data[:participations].store(i, p)
                 end
             end
 

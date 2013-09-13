@@ -203,6 +203,8 @@ class Chapter
     property :id, Serial
     property :number, String, :length => 4
     property :title, String, :length => 255
+    property :wg, Integer
+    property :ar, Integer
 
     # Links
     belongs_to :assessment_report
@@ -224,6 +226,7 @@ end
 #===============
 class ChapterType
     include DataMapper::Resource
+    include Helpers::Data
 
     # Properties
     property :id, Serial
