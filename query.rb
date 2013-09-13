@@ -22,7 +22,7 @@ FileUtils.mkdir_p 'results'
 
 q = Query.new
 results = q.exec
-for row in results
-	puts row.inspect
+
+results.each do |name, csv|
+    Exporter.save csv, "results/#{ARGV[0]}_#{name}.csv"
 end
-Exporter.save results, "results/#{ARGV[0]}.csv"

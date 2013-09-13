@@ -27,7 +27,12 @@ class Importer
 
 		# Getting institutions
 		for i in Institution.all
-			@institutions.store(i.name, i)
+			if i.country != nil
+				key = i.name+'||'+i.country.name.to_s
+			else
+				key = i.name
+			end
+			@institutions.store(key, i)
 		end
 
 		# Getting departments
@@ -45,10 +50,8 @@ class Importer
 		CSV.foreach("feed/Authors.csv") do |row|
 
 			# Reading csv
-			if row[8] != nil
-				agregate = {:ar => row[5], :author_id => row[0], :institution => row[8], :department => row[9]}
-				yield agregate
-			end
+			agregate = {:ar => row[5], :author_id => row[0], :institution => row[8], :department => row[9], :country => row[10]}
+			yield agregate
 		end
 	end
 
@@ -57,9 +60,16 @@ class Importer
 		Participation.transaction do
 			load_csv do |p|
 
-				# Looping through authors
-				Participation.all(:ar => p[:ar], :author_id => p[:author_id]).update(:institution => @institutions[p[:institution]], :department => @departments[p[:department]])
+				if p[:institution] != nil && p[:country] != nil
 				
+					# Special cases
+					if p[:institution] == nil && p[:country] != nil
+						p[:institution] = "N/A"
+					end
+
+					# Looping through authors
+					Participation.all(:ar => p[:ar], :author_id => p[:author_id]).update(:institution => @institutions[p[:institution]+'||'+p[:country]], :department => @departments[p[:department]])
+				end
 			end
 		end
 
