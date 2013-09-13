@@ -16,8 +16,8 @@ class Query
 
         # Headers
         @ic_header = ["author_id", "author_firstname", "author_lastname", "ar_count"]
-        @ic_institutions_header = ["institution_name"] + (2..5).map {|x| "ar#{x}_count"}
-        @ic_countries_header = ["country_name"] + (2..5).map {|x| "ar#{x}_count"}
+        @ic_institutions_header = ["institution_name"] + (2..5).map {|x| "cross#{x}_count"}
+        @ic_countries_header = ["country_name"] + (2..5).map {|x| "cross#{x}_count"}
         @ic_participation_per_ar = (1..5).map {|x| "AR#{x}"}
         @ic_themes_header = ["theme"] + @ic_participation_per_ar
         @ic_stars_header = ["author_id", "author_firstname", "author_lastname"] + (1..5).map {|x| ["ar#{x}_institution", "ar#{x}_country"]}.flatten
@@ -120,24 +120,12 @@ class Query
         # Formatting csv array
         institution_csv = [@ic_institutions_header]
         institutions.each do |name, counts|
-            institution_csv.push([
-                name,
-                counts[2],
-                counts[3],
-                counts[4],
-                counts[5]
-            ])
+            institution_csv.push([name] + (2..5).map {|x| counts[x]})
         end
 
         country_csv = [@ic_countries_header]
         countries.each do |name, counts|
-            country_csv.push([
-                name,
-                counts[2],
-                counts[3],
-                counts[4],
-                counts[5]
-            ])
+            country_csv.push([name] + (2..5).map {|x| counts[x]})
         end
 
         @csv_results.store("institutions", institution_csv)
