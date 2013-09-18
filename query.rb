@@ -24,5 +24,5 @@ q = Query.new
 results = q.exec
 
 results.each do |export|
-    Exporter.save export[:type], export[:data], "results/#{ARGV[0]}_#{export[:name]}"
+    Exporter.save export[:type], export[:data], "results/#{export[:name]}"
 end

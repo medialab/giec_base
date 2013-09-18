@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Total queries
+echo "Computing Inner Circle..."
+ruby query.rb inner_circle
+
+echo "Computing Misc..."
+ruby query.rb misc
+
+echo "Computing Participations..."
+ruby query.rb participations
+
+echo "Computing Potatoes..."
+ruby query.rb potatoes

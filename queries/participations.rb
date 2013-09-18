@@ -23,15 +23,15 @@ class Query
         # Batches
         @participations = Participation.all(:ar.not => 5)
         @wg1_participations = Participation.all(:wg => 1)
-        @roled_participations = Participation.all(:role => ["LA", "CLA"])
+        @roled_participations = Participation.all(:role => ["LA", "LCA"])
     end
 
     # Query Execution
     def exec
 
         # Subparts
-        standard(@participations, "pop_standard")
-        standard(@roled_participations, "pop_roles")
+        standard(@participations, "participations_pop_standard")
+        standard(@roled_participations, "participations_pop_roles")
         themes
 
         return @export
@@ -83,7 +83,7 @@ class Query
             end
         end
 
-        addToExport({:name => "themes", :type => :csv, :data => csv})
+        addToExport({:name => "participations_themes", :type => :csv, :data => csv})
     end
 
 end

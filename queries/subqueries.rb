@@ -48,6 +48,7 @@ class InnerCircle
         end
     end
 
+    # Chosen
     def self.definition3(wg)
         authors = Author.all('participations.wg' => wg)
 
@@ -89,12 +90,69 @@ class InnerCircle
     end
 end
 
+class CrossARAuthors
+
+    def self.get
+
+        authors = Author.all('participations.wg' => [1, 2, 3])
+
+        for author in authors
+            author._data.store(:ars, [])
+
+            for i in 1..5
+                p = Participation.first(:author_id => author.id, :ar => i)
+                if p != nil
+                    author._data[:ars].push(p.ar)
+                end
+            end
+        end
+
+        return authors
+    end
+
+    def self.getWG1
+
+        authors = Author.all('participations.wg' => 1)
+
+        for author in authors
+            author._data.store(:ars, [])
+
+            for i in 1..5
+                p = Participation.first(:author_id => author.id, :ar => i, :wg => 1)
+                if p != nil
+                    author._data[:ars].push(p.ar)
+                end
+            end
+        end
+
+        return authors
+    end
+
+    def self.getRestrictedWG1
+
+        authors = Author.all('participations.wg' => 1, 'participations.role' => ['LA', 'CLA'])
+
+        for author in authors
+            author._data.store(:ars, [])
+
+            for i in 1..5
+                p = Participation.first(:author_id => author.id, :ar => i, :wg => 1, :role => ['LA', 'CLA'])
+                if p != nil
+                    author._data[:ars].push(p.ar)
+                end
+            end
+        end
+
+        return authors
+    end
+end
+
 # Authors working in more than one working group
 class CrossWGAuthors
 
     def self.get
 
-        return Author.all.select do |author|
+        return Author.all('participations.wg' => [1, 2, 3]).select do |author|
             author._data.store(:wgs, [])
             author._data.store(:participations, [])
 
@@ -105,7 +163,7 @@ class CrossWGAuthors
                     author._data[:participations].push p
                 end
             end
-            author._data[:wgs].length > 1
+            true
         end
     end
 end
@@ -119,5 +177,9 @@ class WGAuthorsIds
 
     def self.getByAr(ar, wg)
         return authors = repository(:default).adapter.select("SELECT DISTINCT author_id from participations WHERE ar = #{ar} AND wg = #{wg}")
+    end
+
+    def self.getParticipations(ar, wg)
+        return repository(:default).adapter.select("SELECT id from participations WHERE ar = #{ar} AND wg = #{wg}")
     end
 end

@@ -12,6 +12,8 @@ class Exporter
 
     # Main Static Method
     def self.save(type, data, filepath)
+
+        type ||= :csv
         
         if type == :csv
             CSV.open(filepath+'.csv', 'w') do |csv|

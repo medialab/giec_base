@@ -17,6 +17,7 @@ class Query
     def initialize
 
         # Headers
+        @ic_count_header = (1..3).map {|x| "WG#{x}"}
         @ic_definitions_header = ["definition"] + (1..3).map {|i| "WG#{i}"} + ["description"]
         @ic_stars_header = ["author_id", "author_name", "last_country", "last_institution", "ar_count"]
         
@@ -30,7 +31,8 @@ class Query
     def exec
 
         # Subparts
-        innerCircleDefinitions
+        # innerCircleDefinitions
+        innerCirclePerWG
 
         return @export
     end
@@ -55,7 +57,20 @@ class Query
             csv.push results + [description]
         end
 
-        addToExport({:type => :csv, :name => 'definitions', :data => csv})
+        addToExport({:type => :csv, :name => 'inner_circle_definitions', :data => csv})
+    end
+
+    # Inner circle count per wg
+    def innerCirclePerWG
+        csv = [@ic_count_header]
+        row = []
+
+        for wg in 1..3
+            row.push InnerCircle.definition3(wg).length
+        end
+
+        csv.push row
+        addToExport({:type => :csv, :name => 'inner_circle_per_wg', :data => csv})
     end
 
     # Stars information
