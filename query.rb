@@ -15,7 +15,7 @@ require_relative 'model/model.rb'
 require_relative 'model/taxonomies.rb'
 
 # Main Controller
-require_relative "tools/CsvExporter.rb"
+require_relative 'tools/Exporter.rb'
 require_relative "queries/#{ARGV[0]}.rb"
 
 FileUtils.mkdir_p 'results'
@@ -23,6 +23,6 @@ FileUtils.mkdir_p 'results'
 q = Query.new
 results = q.exec
 
-results.each do |name, csv|
-    Exporter.save csv, "results/#{ARGV[0]}_#{name}.csv"
+results.each do |export|
+    Exporter.save export[:type], export[:data], "results/#{ARGV[0]}_#{export[:name]}"
 end

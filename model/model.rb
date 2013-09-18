@@ -10,16 +10,7 @@
 # Dependencies
 require 'rubygems'
 require 'data_mapper'
-
-module Helpers
-    module Data
-        attr_accessor :_data
-
-        def _data
-            @_data ||= {}
-        end
-    end
-end
+require_relative '../tools/mixins.rb'
 
 # Author
 #========
@@ -247,6 +238,7 @@ class Role
     property :id, Serial
     property :symbol, String, :length => 4
     property :name, String, :length => 255
+    property :rank, Integer
 end
 
 

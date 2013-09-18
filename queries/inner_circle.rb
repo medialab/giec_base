@@ -8,172 +8,79 @@
 #   Version : 1.0
 
 require_relative "subqueries.rb"
+require_relative "../tools/mixins.rb"
 
 class Query
+    include Helpers::Export
 
     # Base properties definition
     def initialize
 
         # Headers
-        @ic_header = ["author_id", "author_firstname", "author_lastname", "ar_count"]
-        @ic_institutions_header = ["institution_name"] + (2..5).map {|x| "cross#{x}_count"}
-        @ic_countries_header = ["country_name"] + (2..5).map {|x| "cross#{x}_count"}
-        @ic_participation_per_ar = (1..5).map {|x| "AR#{x}"}
-        @ic_themes_header = ["theme"] + @ic_participation_per_ar
-        @ic_stars_header = ["author_id", "author_firstname", "author_lastname"] + (1..5).map {|x| ["ar#{x}_institution", "ar#{x}_country"]}.flatten
-
+        @ic_definitions_header = ["definition"] + (1..3).map {|i| "WG#{i}"} + ["description"]
+        @ic_stars_header = ["author_id", "author_name", "last_country", "last_institution", "ar_count"]
+        
         # Batches
-        @inner_authors = InnerCircle.get
+        @inner_authors = []
         @stars = @inner_authors[0..49]
 
-        @csv_results = {}
     end
 
     # Query Execution
     def exec
 
         # Subparts
-        authors
-        countries_and_institutions
-        participation_per_ars
-        stars
+        innerCircleDefinitions
 
-        return @csv_results
+        return @export
     end
 
-    # Authors
-    def authors
-        csv = [@ic_header]
+    # Inner Circle Information
+    def innerCircleDefinitions
+        csv = [@ic_definitions_header]
 
-        for aut in @inner_authors
-            csv.push([
-                aut.id,
-                aut.first_name,
-                aut.last_name,
-                aut._data[:ars].length
-            ])
+        operations = {
+            :definition1 => "AR Count > 1",
+            :definition2 => "AR Count > 2",
+            :definition3 => "AR Count > 1 AND LA OR CLA role",
+            :definition4 => "AR Count > 1 AND LA OR CLA role AND at least two chapters in same AR"
+        }
+
+        operations.each do |function, description|
+            results = [function.to_s]
+            for wg in 1..3
+                results.push InnerCircle.send(function, wg).length
+            end
+
+            csv.push results + [description]
         end
 
-        @csv_results.store("authors", csv)
+        addToExport({:type => :csv, :name => 'definitions', :data => csv})
     end
 
-    # Stars
+    # Stars information
     def stars
+
+        # Looping through stars
         csv = [@ic_stars_header]
 
-        for aut in @stars
-            informations = (1..5).map do |x|
-                if aut._data[:participations].include? x
-                    institution = aut._data[:participations][x].institution || Institution.new(:name => 'N/A')
+        for star in @stars
 
-                    if institution.country != nil
-                        country = institution.country.name
-                    else
-                        country = 'N/A'
-                    end
-
-                    [institution.name, country]
-                else
-                    ['N/A', 'N/A']
-                end
-            end
-
-            csv.push([
-                aut.id,
-                aut.first_name,
-                aut.last_name
-            ] + informations.flatten)
-
-            @csv_results.store('stars', csv)
-        end
-    end
-
-    # Country query
-    def countries_and_institutions
-        countries = {}
-        institutions = {}
-
-        # Determining institutions
-        for aut in @inner_authors
-            
-            aut._data[:participations].each_value do |p|
-                
-                # Regularization
-                if p.institution == nil then p.institution = Institution.new(:name => "N/A", :id => 0) end         
-
-                # Storage
-                institutions[p.institution.name] ||= {2 => 0, 3 => 0, 4 => 0, 5 => 0}
-                for i in 2..aut._data[:ars].length
-                    institutions[p.institution.name][i] += 1
-                end
-
-                if p.institution.country != nil
-                    country = p.institution.country.name
-                    countries[country] ||= {2 => 0, 3 => 0, 4 => 0, 5 => 0}
-                    for i in 2..aut._data[:ars].length
-                        countries[country][i] += 1
-                    end
+            if star._data[:participations].values.last.institution != nil
+                if star._data[:participations].values.last.institution.country != nil
+                    csv.push([
+                        star.id,
+                        "#{star.first_name} #{star.last_name}",
+                        star._data[:participations].values.last.institution.name,
+                        star._data[:participations].values.last.institution.country.name,
+                        star._data[:ars].length
+                    ])
                 end
             end
         end
 
-        # Formatting csv array
-        institution_csv = [@ic_institutions_header]
-        institutions.each do |name, counts|
-            institution_csv.push([name] + (2..5).map {|x| counts[x]})
-        end
-
-        country_csv = [@ic_countries_header]
-        countries.each do |name, counts|
-            country_csv.push([name] + (2..5).map {|x| counts[x]})
-        end
-
-        @csv_results.store("institutions", institution_csv)
-        @csv_results.store("countries", country_csv)
-    end
-
-    def participation_per_ars
-        ars = {}
-        themes = {}
-        (1..5).each {|i| ars.store(i, {:authors => 0, :participations => 0})}
-
-        for ct in ChapterType.all
-            themes.store(ct.name, {1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0})
-        end
-
-        # Retrieving data
-        for aut in @inner_authors
-            for ar in aut._data[:ars]
-                ars[ar][:authors] += 1
-                ars[ar][:participations] += aut.participations.length
-
-                for p in aut.participations
-                    chapter = Chapter.first(:wg => p.wg, :ar => p.ar, :number => p.chapter)
-                    
-                    if chapter != nil
-                        for ct in chapter.types
-                            themes[ct.name][ar] += 1
-                        end
-                    end
-                end
-            end
-        end
-
-        # Formatting csv array
-        authors_csv = [@ic_participation_per_ar]
-        participation_csv = [@ic_participation_per_ar]
-        themes_csv = [@ic_themes_header]
-
-        authors_csv.push((1..5).map {|x| ars[x][:authors]})
-        participation_csv.push((1..5).map {|x| ars[x][:participations]})
-
-        themes.each do |theme, participations|
-            themes_csv.push([theme] + (1..5).map {|x| participations[x]} )
-        end
-
-        @csv_results.store("authors_per_ar", authors_csv)
-        @csv_results.store("participations_per_ar", participation_csv)
-        @csv_results.store("themes_per_ar", themes_csv)
+        # Adding to export
+        addToExport({:name => 'stars', :type => :csv, :data => csv})
     end
 
 end

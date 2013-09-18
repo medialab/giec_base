@@ -21,23 +21,23 @@ DataMapper.auto_migrate!
 
 # Taxonomies
 for group in Taxonomies::Groups
-	Group.create(group)
+    Group.create(group)
 end
 
 for type in Taxonomies::InstitutionTypes
-	InstitutionType.create(type)
+    InstitutionType.create(type)
 end
 
 for role in Taxonomies::Roles
-	Role.create(role)
+    Role.create(role)
 end
 
 for ar in Taxonomies::AssessmentReports
-	AssessmentReport.create(ar)
+    AssessmentReport.create(ar)
 end
 
 for chtype in Taxonomies::ChapterTypes
-	ChapterType.create(chtype)
+    ChapterType.create(chtype)
 end
 
 puts 'Done !'
