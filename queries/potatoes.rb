@@ -45,7 +45,7 @@ class Query
         populations = {
             'total' => @total,
             'wg1' => @wg1,
-            'restricted_wg1' => @restricted_wg1
+            'restricted_wg1: LA + CLA' => @restricted_wg1
         }
 
         count = 0
@@ -74,6 +74,15 @@ class Query
                 for wg in author._data[:wgs]
                     combinations[[wg]] += 1
                 end
+            end
+
+            if author._data[:wgs].length > 2
+                combinations[[1, 2]] ||= 0
+                combinations[[1, 3]] ||= 0
+                combinations[[2, 3]] ||= 0
+                combinations[[1, 2]] += 1
+                combinations[[1, 3]] += 1
+                combinations[[2, 3]] += 1
             end
         end
 
