@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------
-# Inner Circle Query
+# Potato Query
 # -------------------------------------------------------------------
 #
 #
@@ -21,10 +21,6 @@ class Query
         @potatoes_header = ["combination", "count"]
 
         # Populations
-        @total = CrossARAuthors.get
-        @wg1 = CrossARAuthors.getWG1
-        @restricted_wg1 = CrossARAuthors.getRestrictedWG1
-
         @crossWG = CrossWGAuthors.get
     end
 
@@ -32,8 +28,9 @@ class Query
     def exec
 
         # Subparts
-        target_numbers
-        potatoes
+        # target_numbers
+        # potatoes
+        ar_potatoes
 
         return @export
     end
@@ -43,9 +40,11 @@ class Query
         csv = [@base_header]
 
         populations = {
-            'total' => @total,
-            'wg1' => @wg1,
-            'restricted_wg1: LA + CLA' => @restricted_wg1
+            'total' => CrossARAuthors.get,
+            'roled_total : LA + RE + LCA' => CrossARAuthors.getByRoles,
+            'wg1' => CrossARAuthors.get(1),
+            'roled_wg1: LA + LCA' => CrossARAuthors.getByRoles(1, ['LA', 'LCA']),
+            'roled_wg1 2: LA + LCA + RE' => CrossARAuthors.getByRoles(1)
         }
 
         count = 0
@@ -89,5 +88,20 @@ class Query
         combinations.each {|combination, count| csv.push([combination.inspect, count])}
 
         addToExport({:name => "potatoes", :data => csv})
+    end
+
+    # AR Potatoes Viz
+    def ar_potatoes
+        csv = [@potatoes_header]
+        combinations = {}
+
+        for author in CrossARAuthors.get
+            combinations[author._data[:ars]] ||= 0
+            combinations[author._data[:ars]] += 1
+        end
+
+        combinations.each {|combination, count| csv.push([combination.inspect, count])}
+
+        addToExport({:name => "ar_potatoes", :data => csv})
     end
 end

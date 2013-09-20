@@ -19,6 +19,7 @@ class Query
         # Headers
         @ic_count_header = (1..3).map {|x| "WG#{x}"}
         @ic_definitions_header = ["definition"] + (1..3).map {|i| "WG#{i}"} + ["description"]
+        @ic_gradation_header = ["WG"] + (2..5).map {|i| ["#{i}ARS", "#{i}ARS + >=2 chapters", "#{i}ARS ratio"]}.flatten
         @ic_stars_header = ["author_id", "author_name", "last_country", "last_institution", "ar_count"]
         
         # Batches
@@ -32,7 +33,8 @@ class Query
 
         # Subparts
         # innerCircleDefinitions
-        innerCirclePerWG
+        # innerCirclePerWG
+        innerCircleGradation
 
         return @export
     end
@@ -58,6 +60,34 @@ class Query
         end
 
         addToExport({:type => :csv, :name => 'inner_circle_definitions', :data => csv})
+    end
+
+    # Inner circle gradation
+    def innerCircleGradation
+        csv = [@ic_gradation_header]
+
+        # Looping through WG
+        for wg in 1..3
+            row = [wg]
+
+            authors = InnerCircle.definition5(wg)
+            uber_authors = InnerCircle.definition6(wg)
+
+            for i in 2..5
+                authors_count = authors.select {|a| a._data[:ars].length == i}.length
+                uber_authors_count = uber_authors.select {|a| a._data[:ars].length == i}.length
+                
+                row.push authors_count
+                row.push uber_authors_count
+
+                if authors_count == 0 then authors_count = 1 end
+                row.push (uber_authors_count * 100) / authors_count
+            end
+
+            csv.push row
+        end
+
+        addToExport({:name => 'inner_circle_gradation', :data => csv})
     end
 
     # Inner circle count per wg
