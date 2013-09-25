@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------
-# Participations Query
+# Axis 1 Query
 # -------------------------------------------------------------------
 #
 #
@@ -29,8 +29,8 @@ class Query
     def exec
 
         # Subparts
-        # viz('vizA', CrossARAuthors.get, CrossARAuthors.getByRoles)
-        # viz('vizB', CrossARAuthors.get(1), CrossARAuthors.getByRoles(1))
+        viz('vizA', CrossARAuthors.get, CrossARAuthors.getByRoles)
+        viz('vizB', CrossARAuthors.get(1), CrossARAuthors.getByRoles(1))
 
         return @export
     end
@@ -66,5 +66,4 @@ class Query
         return [description] + group_counts.values
     end
 
-    # for each gp get ins then get distinct authors with ins IN (result)
 end

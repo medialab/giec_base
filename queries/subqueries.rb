@@ -150,6 +150,24 @@ class CrossARAuthors
         return authors
     end
 
+    def self.getByGeo(geo_symbol)
+
+        authors = Author.all('institutions.country.groupings.symbol' => geo_symbol)
+
+        for author in authors
+            author._data.store(:ars, [])
+
+            for i in 1..5
+                p = Participation.first(:author_id => author.id, :ar => i)
+                if p != nil
+                    author._data[:ars].push(p.ar)
+                end
+            end
+        end
+
+        return authors
+    end
+
     def self.getByRoles(wgs=[1,2,3], roles=['LA', 'LCA', 'RE'])
 
         authors = Author.all('participations.wg' => wgs, 'participations.role' => roles)

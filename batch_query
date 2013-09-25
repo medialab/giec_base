@@ -1,14 +1,20 @@
 #!/bin/bash
 
 # Total queries
-echo "Computing Inner Circle..."
-ruby query.rb inner_circle
+# echo "Computing Inner Circle..."
+# ruby query.rb inner_circle
 
-echo "Computing Misc..."
-ruby query.rb misc
+# echo "Computing Misc..."
+# ruby query.rb misc
 
-echo "Computing Participations..."
-ruby query.rb participations
+# echo "Computing Participations..."
+# ruby query.rb participations
 
-echo "Computing Potatoes..."
-ruby query.rb potatoes
+# echo "Computing Potatoes..."
+# ruby query.rb potatoes
+
+echo "Axis 1..."
+ruby query.rb axis1
+
+echo "Axis 2..."
+ruby query.rb axis2
