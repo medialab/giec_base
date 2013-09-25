@@ -16,9 +16,15 @@ class Query
     # Base properties definition
     def initialize
 
+        # Taxonomies
+        @geo_groups = Taxonomies::Groups.select {|g| g[:type] == "GEO"}
+        @geo_symbols = @geo_groups.map {|g| g[:symbol]}
+        @geo_dict = {}
+        @geo_groups.map {|g| @geo_dict.store(g[:symbol], g[:name])}
+
         # Headers
         @standard_header = ["author_id", "nationality", "institution", "role", "ar", "wg", "chapter"]
-        @theme_header = @standard_header + ["theme"]
+        @theme_header = @standard_header + ["theme", "group_symbol", "group_name"]
 
         # Batches
         @participations = Participation.all(:ar.not => 5)
@@ -30,8 +36,8 @@ class Query
     def exec
 
         # Subparts
-        standard(@participations, "participations_pop_standard")
-        standard(@roled_participations, "participations_pop_roles")
+        # standard(@participations, "participations_pop_standard")
+        # standard(@roled_participations, "participations_pop_roles")
         themes
 
         return @export
@@ -67,6 +73,9 @@ class Query
             p.institution ||= Institution.new(:name => 'N/A')
             p.institution.country ||= Country.new(:name => 'N/A')
 
+            group_symbol = p.institution.country.groupings.length > 0 ? p.institution.country.groupings.select {|g| @geo_symbols.include?(g.symbol)}[0].symbol : 'N/A'
+            group_name = p.institution.country.groupings.length > 0 ? @geo_dict[p.institution.country.groupings.select {|g| @geo_symbols.include?(g.symbol)}[0].symbol] : 'N/A'
+
             chapter = Chapter.first(:number => p.chapter, :wg => p.wg, :ar => p.ar)
 
             for ct in chapter.types
@@ -78,7 +87,9 @@ class Query
                     p.ar,
                     "#{p.ar}.#{p.wg}",
                     "#{p.ar}.#{p.wg}.#{p.chapter}",
-                    ct.name
+                    ct.name,
+                    group_symbol,
+                    group_name
                 ])
             end
         end

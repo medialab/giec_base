@@ -27,19 +27,19 @@ class Query
         @header_vizC = ["geographical_group"] + (1..5).map {|i| "author_count_for_AR#{i}"}
         @header_vizE = ["geographical_group"] + (1..3).map {|i| "author_count_for_WG#{i}"}
         @header_vizF = ["population"] + (1..5).map {|i| "author_count_AR#{i}"}
-        @header_vizG = ["geographical_symbol", "geographical_group", "country", "author_count"]
+        @header_vizG = ["geographical_symbol", "geographical_group", "country", "participation_count"]
     end
 
     # Query Execution
     def exec
 
         # Subparts
-        vizC
-        vizD
-        vizE
-        vizF
+        # vizC
+        # vizD
+        # vizE
+        # vizF
         vizG
-        vizJ
+        # vizJ
 
         return @export
     end
@@ -131,7 +131,7 @@ class Query
             ]
             institutions = c.institutions.map {|i| i.id}
             
-            row.push repository(:default).adapter.select("SELECT DISTINCT author_id from participations WHERE institution_id IN (#{institutions.join(',')})").length
+            row.push repository(:default).adapter.select("SELECT author_id from participations WHERE institution_id IN (#{institutions.join(',')})").length
             csv.push row
         end
 
