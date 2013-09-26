@@ -18,7 +18,7 @@ class Query
     def initialize
 
         # Taxonomies
-        @geo_groups = Taxonomies::Groups.select {|g| g[:type] == "GEO"}
+        @geo_groups = Taxonomies::Groups.select {|g| g[:type] == "WMO"}
         @geo_symbols = @geo_groups.map {|g| g[:symbol]}
 
         # Headers

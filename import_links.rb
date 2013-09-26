@@ -25,15 +25,7 @@ class Importer
         @institutions = {}
         @departments = {}
 
-        # Getting institutions
-        for i in Institution.all
-            if i.country != nil
-                key = i.name+'||'+i.country.name.to_s
-            else
-                key = i.name
-            end
-            @institutions.store(key, i)
-        end
+        @exclusion = Taxonomies::Exclusion
 
         # Getting departments
         for d in Department.all
@@ -47,11 +39,12 @@ class Importer
 
     # Loading Csv File
     def load_csv
-        CSV.foreach("feed/Authors.csv") do |row|
+        CSV.foreach("feed/Authors.csv", {:headers => :first_row}) do |row|
 
             # Reading csv
-            agregate = {:ar => row[5], :author_id => row[0], :institution => row[8], :department => row[9], :country => row[10]}
-            yield agregate
+            agregate = {:ar => row[5], :author_id => row[0], :institution => row[8], :department => row[9], :country => row[10], :type => row[7]}
+
+            if agregate[:type] != 'IPCC' && !@exclusion.include?(agregate[:author_id].to_i) then yield agregate end
         end
     end
 
@@ -60,19 +53,13 @@ class Importer
         Participation.transaction do
             load_csv do |p|
 
-                if p[:institution] != nil && p[:country] != nil
-                
-                    # Special cases
-                    if p[:institution] == nil && p[:country] != nil
-                        p[:institution] = "N/A"
-                    end
+                puts p.inspect
+                dep_id = p[:department] != nil ? @departments[p[:department]].id : nil
+                ins_id = Institution.first(:name => p[:institution], 'country.name' => p[:country]).id
 
-                    # Looping through authors
-                    Participation.all(:ar => p[:ar], :author_id => p[:author_id]).update(:institution => @institutions[p[:institution]+'||'+p[:country]], :department => @departments[p[:department]])
-                end
+                Participation.all(:ar => p[:ar], :author_id => p[:author_id]).update(:institution_id => ins_id, :department_id => dep_id)
             end
         end
-
     end
 end
 

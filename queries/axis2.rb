@@ -18,7 +18,7 @@ class Query
     def initialize
 
         # Taxonomies
-        @geo_groups = Taxonomies::Groups.select {|g| g[:type] == "GEO"}
+        @geo_groups = Taxonomies::Groups.select {|g| g[:type] == "WMO"}
         @geo_symbols = @geo_groups.map {|g| g[:symbol]}
         @geo_dict = {}
         @geo_groups.map {|g| @geo_dict.store(g[:symbol], g[:name])}
@@ -34,12 +34,12 @@ class Query
     def exec
 
         # Subparts
-        # vizC
-        # vizD
-        # vizE
-        # vizF
+        vizC
+        vizD
+        vizE
+        vizF
         vizG
-        # vizJ
+        vizJ
 
         return @export
     end

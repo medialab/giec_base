@@ -53,7 +53,7 @@ class Importer
 
         # Computing placeholder institutions
         for country in @countries
-            @placeholder_institutions.push Institution.new(:name => 'N/A', :type_id => 10, :country => country)
+            @placeholder_institutions.push Institution.new(:name => 'N/A', :type_id => 12, :country => country)
         end
     end
 
