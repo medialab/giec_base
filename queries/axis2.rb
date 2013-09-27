@@ -28,6 +28,7 @@ class Query
         @header_vizE = ["geographical_group"] + (1..3).map {|i| "author_count_for_WG#{i}"}
         @header_vizF = ["population"] + (1..5).map {|i| "author_count_AR#{i}"}
         @header_vizG = ["geographical_symbol", "geographical_group", "country", "participation_count"]
+        @header_vizJ = ["geographical_group"] + (1..5).map {|i| "participation_count_for_AR#{i}"}
     end
 
     # Query Execution
@@ -139,7 +140,7 @@ class Query
     end
 
     def vizJ
-        csv = [@header_vizC]
+        csv = [@header_vizJ]
 
         for geo in @geo_groups
             row = [geo[:name]]
