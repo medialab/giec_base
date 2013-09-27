@@ -29,8 +29,8 @@ class Query
 
         # Subparts
         # target_numbers
-        # potatoes
-        ar_potatoes
+        potatoes
+        # ar_potatoes
 
         return @export
     end

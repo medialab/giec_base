@@ -52,8 +52,7 @@ class Importer
     def compute
         Participation.transaction do
             load_csv do |p|
-
-                puts p.inspect
+                
                 dep_id = p[:department] != nil ? @departments[p[:department]].id : nil
                 ins_id = Institution.first(:name => p[:institution], 'country.name' => p[:country]).id
 

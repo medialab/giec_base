@@ -152,13 +152,13 @@ class CrossARAuthors
 
     def self.getByGeo(geo_symbol)
 
-        authors = Author.all('institutions.country.groupings.symbol' => geo_symbol)
+        authors = Author.all('participations.institution.country.groupings.symbol' => geo_symbol)
 
         for author in authors
             author._data.store(:ars, [])
 
             for i in 1..5
-                p = Participation.first(:author_id => author.id, :ar => i)
+                p = Participation.first(:author_id => author.id, :ar => i, 'institution.country.groupings.symbol' => geo_symbol)
                 if p != nil
                     author._data[:ars].push(p.ar)
                 end
@@ -222,5 +222,12 @@ class WGAuthorsIds
 
     def self.getParticipations(ar, wg)
         return repository(:default).adapter.select("SELECT id from participations WHERE ar = #{ar} AND wg = #{wg}")
+    end
+end
+
+# Generic Query
+class SQLQuery
+    def self.get(query)
+        return repository(:default).adapter.select(query)
     end
 end
