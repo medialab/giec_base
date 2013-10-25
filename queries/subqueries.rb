@@ -204,7 +204,7 @@ class CrossWGAuthors
                     author._data[:participations].push p
                 end
             end
-            true
+            author._data[:wgs].length > 1
         end
     end
 end

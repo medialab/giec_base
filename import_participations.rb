@@ -60,9 +60,11 @@ class Importer
 
     # Loading complement
     def load_csv_complement()
-        CSV.foreach("feed/AR5_complement.csv", {:headers => :first_row}) do |row|
-            participation = {:ar => 5, :author_id => row[0], :chapter => row[1], :role => row[2], :wg => row[3].length}
-            yield participation
+        for i in 1..3
+            CSV.foreach("feed/AR5_complement#{i}.csv", {:headers => :first_row}) do |row|
+                participation = {:ar => 5, :author_id => row[0], :chapter => row[1], :role => row[2], :wg => row[3].length}
+                yield participation
+            end
         end
     end
 

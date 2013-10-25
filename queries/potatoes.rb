@@ -69,20 +69,20 @@ class Query
             combinations[author._data[:wgs]] ||= 0
             combinations[author._data[:wgs]] += 1
 
-            if author._data[:wgs].length > 1
-                for wg in author._data[:wgs]
-                    combinations[[wg]] += 1
-                end
-            end
+            # if author._data[:wgs].length > 1
+            #     for wg in author._data[:wgs]
+            #         combinations[[wg]] += 1
+            #     end
+            # end
 
-            if author._data[:wgs].length > 2
-                combinations[[1, 2]] ||= 0
-                combinations[[1, 3]] ||= 0
-                combinations[[2, 3]] ||= 0
-                combinations[[1, 2]] += 1
-                combinations[[1, 3]] += 1
-                combinations[[2, 3]] += 1
-            end
+            # if author._data[:wgs].length > 2
+            #     combinations[[1, 2]] ||= 0
+            #     combinations[[1, 3]] ||= 0
+            #     combinations[[2, 3]] ||= 0
+            #     combinations[[1, 2]] += 1
+            #     combinations[[1, 3]] += 1
+            #     combinations[[2, 3]] += 1
+            # end
         end
 
         combinations.each {|combination, count| csv.push([combination.inspect, count])}
