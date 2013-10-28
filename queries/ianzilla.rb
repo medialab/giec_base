@@ -18,15 +18,15 @@ class Query
     def initialize
 
         # Headers
-        @header = ["id", "first_name", "last_name", "participations (AR.WG)", "WGS count", "last_institution", "pays"]
+        @header = ["id", "first_name", "last_name", "participations (AR.WG)", "WGS count", "last_institution", "pays", "LCA", "LA", "RE", "CA"]
     end
 
     # Query Execution
     def exec
 
         # Subparts
-        # addToExport({:data => ianzilla, :name => "ianzilla"})
-        addToExport({:data => everyone, :name => "everyone"})
+        addToExport({:data => ianzilla, :name => "ianzilla"})
+        # addToExport({:data => everyone, :name => "everyone"})
         return @export
     end
 
@@ -43,43 +43,48 @@ class Query
     end
 
     # Query
-    # def ianzilla
-    #     csv = [@header]
+    def ianzilla
+        csv = [@header]
 
-    #     authors = CrossWGAuthors.get
+        authors = CrossWGAuthors.get
 
-    #     for a in authors
+        for a in authors
 
-    #         # Last institution
-    #         last_institution = a.institutions.last
+            # Last institution
+            last_institution = a.institutions.last
 
-    #         # Participations
-    #         pstring = ''
-    #         for wg in a._data[:wgs]
-    #             ps = []
-    #             for ar in 1..5
-    #                 arp = Participation.first(:author_id => a.id, :wg => wg, :ar => ar)
-    #                 if arp != nil
-    #                     ps.push ar
-    #                 end
-    #             end
-    #         end
-    #         pstring << "WG#{wg} => ARS(#{ps.join(',')})"
+            # Participations
+            pstring = ''
+            for wg in a._data[:wgs]
+                ps = []
+                for ar in 1..5
+                    arp = Participation.first(:author_id => a.id, :wg => wg, :ar => ar)
+                    if arp != nil
+                        ps.push ar
+                    end
+                end
+                pstring << "WG#{wg} => ARS(#{ps.join(',')}) "
+            end
+            
 
-    #         row = [
-    #             a.id,
-    #             a.first_name,
-    #             a.last_name,
-    #             pstring,
-    #             a._data[:wgs].length,
-    #             "(#{last_institution.type.symbol}) #{last_institution.name}",
-    #             last_institution.country.name
-    #         ]
+            row = [
+                a.id,
+                a.first_name,
+                a.last_name,
+                pstring,
+                a._data[:wgs].length,
+                "(#{last_institution.type.symbol}) #{last_institution.name}",
+                last_institution.country.name,
+                la = (Participation.first(:author_id => a.id, :role => 'LA') != nil) ? 'yes' : 'no',
+                cla = (Participation.first(:author_id => a.id, :role => 'LCA') != nil) ? 'yes' : 'no',
+                re = (Participation.first(:author_id => a.id, :role => 'RE') != nil) ? 'yes' : 'no',
+                ca = (Participation.first(:author_id => a.id, :role => 'CA') != nil) ? 'yes' : 'no',
+            ]
 
-    #         csv.push row
-    #     end
+            csv.push row
+        end
 
-    #     return csv
-    # end
+        return csv
+    end
 
 end
