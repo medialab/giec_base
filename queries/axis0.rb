@@ -32,8 +32,8 @@ class Query
     def exec
 
         # Subparts
-        # viz0
-        # viz0bis
+        viz0
+        viz0bis
         vizChina
 
         return @export

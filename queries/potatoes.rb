@@ -28,9 +28,9 @@ class Query
     def exec
 
         # Subparts
-        # target_numbers
+        target_numbers
         potatoes
-        # ar_potatoes
+        ar_potatoes
 
         return @export
     end

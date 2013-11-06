@@ -35,12 +35,12 @@ class Query
     def exec
 
         # Subparts
-        # vizC
-        # vizD
-        # vizE
-        # vizF
+        vizC
+        vizD
+        vizE
+        vizF
         vizG
-        # vizJ
+        vizJ
 
         return @export
     end

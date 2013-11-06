@@ -36,8 +36,8 @@ class Query
     def exec
 
         # Subparts
-        # standard(@participations, "participations_pop_standard")
-        # standard(@roled_participations, "participations_pop_roles")
+        standard(@participations, "participations_pop_standard")
+        standard(@roled_participations, "participations_pop_roles")
         themes
 
         return @export

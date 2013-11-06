@@ -32,8 +32,8 @@ class Query
     def exec
 
         # Subparts
-        # innerCircleDefinitions
-        # innerCirclePerWG
+        innerCircleDefinitions
+        innerCirclePerWG
         innerCircleGradation
 
         return @export

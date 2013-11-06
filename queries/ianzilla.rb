@@ -30,8 +30,8 @@ class Query
     def exec
 
         # Subparts
-        # addToExport({:data => ianzilla, :name => "ianzilla"})
-        # addToExport({:data => everyone, :name => "everyone"})
+        addToExport({:data => ianzilla, :name => "ianzilla"})
+        addToExport({:data => everyone, :name => "everyone"})
         addToExport({:data => ianzilla2, :name => "ianzilla2"})
         ianzilla2
         return @export
@@ -88,7 +88,7 @@ class Query
                 ca = (Participation.first(:author_id => a.id, :role => 'CA') != nil) ? 'yes' : 'no',
             ]
 
-            csv.push rowgmail
+            csv.push row
 
         end
 
