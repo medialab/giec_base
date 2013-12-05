@@ -23,8 +23,8 @@ class Query
         @header_china = ["population", "count"]
 
         # Population
-        # @population = CrossARAuthors.get
-        @population = []
+        @population = CrossARAuthors.get
+        # @population = []
 
     end
 

@@ -21,7 +21,7 @@ class Query
         @potatoes_header = ["combination", "count"]
 
         # Populations
-        @crossWG = CrossWGAuthors.get
+        @crossWG = CrossWGAuthorsTotal.get
     end
 
     # Query Execution

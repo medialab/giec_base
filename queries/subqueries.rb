@@ -209,6 +209,26 @@ class CrossWGAuthors
     end
 end
 
+class CrossWGAuthorsTotal
+
+    def self.get
+
+        return Author.all('participations.wg' => [1, 2, 3]).select do |author|
+            author._data.store(:wgs, [])
+            author._data.store(:participations, [])
+
+            (1..3).each do |wg|
+                p = Participation.first(:wg => wg, :author_id => author.id)
+                if p != nil
+                    author._data[:wgs].push p.wg
+                    author._data[:participations].push p
+                end
+            end
+            true
+        end
+    end
+end
+
 # Total authors of a Working group
 class WGAuthorsIds
 

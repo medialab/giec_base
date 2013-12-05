@@ -34,23 +34,68 @@ end
 class SqlToNeo
 
   def initialize
+    puts 'Migrating SQL Database to Neo4j...'
+
+    # Node scripting index
+    @authors = {}
+    @chapters = {}
 
     # Launching rest client
     @neo = Neography::Rest.new
 
-    # Creating nodes
+    # Wiping the base
+    puts 'Cleaning the database...'
+    @neo.execute_script("g.clear()")
+
+    # Computing graph
     authors
+    chapters
+    edges
   end
 
   def authors
     puts 'Computing authors...'
 
     for a in Author.all
-      @neo.create_node('type' => 'author', 'first_name' => a.first_name, 'last_name' => a.last_name)
+      @authors.store(
+        a.id,
+        @neo.create_node(
+        'type' => 'author',
+        'first_name' => a.first_name,
+        'last_name' => a.last_name
+        )
+      )
     end
+  end
+
+  def chapters
+    puts 'Computing chapters...'
+
+    for c in Chapter.all
+      @chapters.store(
+        "#{c.ar}/#{c.wg}/#{c.number}",
+        @neo.create_node('type' => 'chapter', 'title' => c.title)
+      )
+    end
+  end
+
+  def edges
+    puts 'Computing edges:'
+
+    # Author -> chapter
+    puts '    authors --> chapters'
+    for p in Participation.all
+      rel = @neo.create_relationship(
+        :contribution,
+        @authors[p.author_id],
+        @chapters["#{p.ar}/#{p.wg}/#{p.chapter}"]
+      )
+
+      @neo.set_relationship_properties(rel, {'role' => p.role})
+    end
+
   end
 end
 
 # Launching process
-puts 'Migrating SQL Database to Neo4j...'
 SqlToNeo.new

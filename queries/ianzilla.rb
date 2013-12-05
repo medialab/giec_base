@@ -23,16 +23,18 @@ class Query
 
         # Headers
         @header = ["id", "first_name", "last_name", "participations (AR.WG)", "WGS count", "last_institution", "pays", "LCA", "LA", "RE", "CA"]
-        @header2 = ["country"] + @themes.map {|t| t.name}    
+        @header2 = ["country"] + @themes.map {|t| t.name}
+        @header3 = ["country"] + (1..5).map {|i| ["WG2 participations for AR#{i}", "WG2 author count for AR#{i}"]}.flatten  
     end
 
     # Query Execution
     def exec
 
         # Subparts
-        addToExport({:data => ianzilla, :name => "ianzilla"})
-        addToExport({:data => everyone, :name => "everyone"})
-        addToExport({:data => ianzilla2, :name => "ianzilla2"})
+        # addToExport({:data => ianzilla, :name => "ianzilla"})
+        # addToExport({:data => everyone, :name => "everyone"})
+        # addToExport({:data => ianzilla2, :name => "ianzilla2"})
+        addToExport({:data => ianzilla3, :name => "ianzilla3"})
         ianzilla2
         return @export
     end
@@ -108,6 +110,25 @@ class Query
                     pl += Participation.all('institution.country.name' => c.name, :ar => ch.ar, :wg => ch.wg, :chapter => ch.number).length
                 end
                 row.push pl
+            end
+            csv.push row
+        end
+
+        return csv
+    end
+
+    # Query 3
+    def ianzilla3
+        csv = [@header3]
+
+        for c in @countries
+            row = [c.name]
+            for ar in 1..5
+                aset = Set.new
+                ps = Participation.all('institution.country.name' => c.name, :ar => ar, :wg => 2)
+                ps.map {|p| aset.add(p.author.id)}
+                row.push ps.length
+                row.push aset.length
             end
             csv.push row
         end
