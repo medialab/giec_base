@@ -230,7 +230,7 @@ end
 
 
 # Roles
-#===============
+#=======
 class Role
     include DataMapper::Resource
 

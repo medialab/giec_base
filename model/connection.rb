@@ -19,4 +19,5 @@ cd = File.dirname(__FILE__)
 config = YAML::load(File.open(cd+'/../config/database.yml', 'r'))
 
 # Returning database connection
-DataMapper.setup(:default, "mysql://#{config['user']}:#{config['password']}@#{config['host']}/#{config['database']}")
+# DataMapper.setup(:default, "mysql://#{config['user']}:#{config['password']}@#{config['host']}:#{config['port']}/#{config['database']}")
+DataMapper.setup(:default, "sqlite:giec.db")
