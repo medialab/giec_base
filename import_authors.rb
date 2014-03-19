@@ -58,7 +58,7 @@ class Importer
         CSV.foreach("feed/Authors.csv", {:headers => :first_row}) do |row|
 
             # Users
-            aut = {:id => row[0], :first_name => row[1], :last_name => row[2]}
+            aut = {:id => Taxonomies::Duplicates[row[0]] || row[0], :first_name => row[1], :last_name => row[2]}
             ins = {:name => row[8], :type => row[7], :department => row[9], :country => row[10]}
 
             # Yielding rows

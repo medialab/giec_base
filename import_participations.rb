@@ -49,7 +49,7 @@ class Importer
             else
 
                 # Yielding row
-                agregate = {:id => row[0], :links => []}
+                agregate = {:id => Taxonomies::Duplicates[row[0]] || row[0], :links => []}
                 row[1..-1].each_with_index do |val, index|
                     if val != nil then agregate[:links].push({:chapter => @header[index+1].strip, :role => val.strip}) end
                 end
@@ -62,7 +62,7 @@ class Importer
     def load_csv_complement()
         for i in 1..3
             CSV.foreach("feed/AR5_complement#{i}.csv", {:headers => :first_row}) do |row|
-                participation = {:ar => 5, :author_id => row[0], :chapter => row[1], :role => row[2], :wg => row[3].length}
+                participation = {:ar => 5, :author_id => Taxonomies::Duplicates[row[0]] || row[0], :chapter => row[1], :role => row[2], :wg => row[3].length}
                 yield participation
             end
         end

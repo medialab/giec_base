@@ -42,7 +42,7 @@ class Importer
         CSV.foreach("feed/Authors.csv", {:headers => :first_row}) do |row|
 
             # Reading csv
-            agregate = {:ar => row[5], :author_id => row[0], :institution => row[8], :department => row[9], :country => row[10], :type => row[7]}
+            agregate = {:ar => row[5], :author_id => Taxonomies::Duplicates[row[0]] || row[0], :institution => row[8], :department => row[9], :country => row[10], :type => row[7]}
 
             if agregate[:type] != 'IPCC' && !@exclusion.include?(agregate[:author_id].to_i) then yield agregate end
         end
