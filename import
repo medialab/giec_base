@@ -8,3 +8,4 @@ ruby import_authors.rb
 ruby import_participations.rb
 ruby import_links.rb
 ruby import_chairmen.rb
+ruby deduplicate_institutions.rb
